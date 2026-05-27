@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "241999484451",
+    "project_id": "my-top-noti-project",
+    "storage_bucket": "my-top-noti-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241999484451:android:c95f7f483856a8f3938396",
+        "android_client_info": {
+          "package_name": "com.express.appnoti"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDNCIEglpGT3Ec1Bwovj7YvGkY7VS2NTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
