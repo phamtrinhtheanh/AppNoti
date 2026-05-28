@@ -8,22 +8,23 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 class DeviceRepository(
-    private val client: OkHttpClient = OkHttpClient()
+    private val client: OkHttpClient = OkHttpClient(),
+    var baseUrl: String = AppConfig.BASE_URL
 ) {
     fun subscribe(userId: String, app: String, token: String): ApiResult {
-        val url = "${AppConfig.BASE_URL}/public/api/device/subscribe" +
+        val url = "${baseUrl}/public/api/device/subscribe" +
             "?userId=${userId.encode()}&app=${app.encode()}&token=${token.encode()}"
         return get(url)
     }
 
     fun unsubscribe(userId: String, app: String): ApiResult {
-        val url = "${AppConfig.BASE_URL}/public/api/device/unsubscribe" +
+        val url = "${baseUrl}/public/api/device/unsubscribe" +
             "?userId=${userId.encode()}&app=${app.encode()}"
         return get(url)
     }
 
     fun notifications(userId: String, page: Int = 1, limit: Int = 20): NotificationListResult {
-        val url = "${AppConfig.BASE_URL}/public/api/notification/list" +
+        val url = "${baseUrl}/public/api/notification/list" +
             "?userId=${userId.encode()}&page=$page&limit=$limit&seen=-1"
         val body = executeGet(url)
         val json = JSONObject(body)
@@ -44,10 +45,10 @@ class DeviceRepository(
                     add(
                         NotificationItem(
                             id = row.optLong("id"),
-                            title = row.optString("title"),
-                            content = row.optString("content"),
-                            action = row.optString("action"),
-                            icon = row.optString("icon"),
+                            title = row.optString("title").let { if (it == "null") "" else it },
+                            content = row.optString("content").let { if (it == "null") "" else it },
+                            action = row.optString("action").let { if (it == "null") "" else it },
+                            icon = row.optString("icon").let { if (it == "null") "" else it },
                             createDate = row.optLong("createDate"),
                             seen = row.optBoolean("seen", false),
                             mapExt = row.optJSONObject("mapExt")?.let { ext ->
@@ -74,7 +75,7 @@ class DeviceRepository(
     }
 
     fun markAsSeen(userId: String, notificationId: Long, createDate: Long): ApiResult {
-        val url = "${AppConfig.BASE_URL}/public/api/notification/seen/${notificationId}" +
+        val url = "${baseUrl}/public/api/notification/seen/${notificationId}" +
                 "?userId=${userId.encode()}&createDate=$createDate"
         val requestBody = "".toRequestBody(null)
         val request = Request.Builder()

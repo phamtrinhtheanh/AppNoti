@@ -12,8 +12,10 @@ import kotlinx.coroutines.withContext
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val prefs = application.getSharedPreferences("app_noti", Application.MODE_PRIVATE)
-    private val repository = DeviceRepository()
+    private val repository = DeviceRepository(baseUrl = prefs.getString("api_url", AppConfig.BASE_URL) ?: AppConfig.BASE_URL)
 
+    var apiUrl = androidx.compose.runtime.mutableStateOf(prefs.getString("api_url", AppConfig.BASE_URL) ?: AppConfig.BASE_URL)
+        private set
     var userId = androidx.compose.runtime.mutableStateOf(prefs.getString("user_id", "") ?: "")
         private set
     var appName = androidx.compose.runtime.mutableStateOf(prefs.getString("app_name", AppConfig.APP_NAME) ?: AppConfig.APP_NAME)
@@ -36,6 +38,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         AppLogStore.add("App ready. Firebase app=${AppConfig.APP_NAME}")
         refreshToken()
+    }
+
+    fun setApiUrl(value: String) {
+        apiUrl.value = value
+        prefs.edit().putString("api_url", value).apply()
+        repository.baseUrl = value
     }
 
     fun setUserId(value: String) {
@@ -182,6 +190,36 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }.onFailure { error ->
                 AppLogStore.add("SEEN FAIL: ${error.message}")
             }
+        }
+    }
+
+    fun markAllAsSeen() {
+        val uid = userId.value.trim()
+        if (uid.isEmpty()) return
+        
+        val unreadList = notifications.value.filter { !it.seen }
+        if (unreadList.isEmpty()) {
+            AppLogStore.add("SEEN_ALL: No unread items")
+            return
+        }
+        
+        AppLogStore.add("SEEN_ALL: marking ${unreadList.size} unread items...")
+        viewModelScope.launch {
+            var successCount = 0
+            unreadList.forEach { item ->
+                val result = runCatching {
+                    withContext(Dispatchers.IO) {
+                        repository.markAsSeen(uid, item.id, item.createDate)
+                    }
+                }
+                result.onSuccess { data ->
+                    if (!data.error) {
+                        successCount++
+                    }
+                }
+            }
+            AppLogStore.add("SEEN_ALL OK: marked $successCount items")
+            loadNotifications()
         }
     }
 

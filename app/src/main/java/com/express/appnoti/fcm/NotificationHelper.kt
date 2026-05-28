@@ -47,6 +47,7 @@ object NotificationHelper {
             .setStyle(NotificationCompat.BigTextStyle().bigText(body))
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
+            .setColor(0xFF4F46E5.toInt())
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 

@@ -19,28 +19,18 @@ private val DarkColorScheme = darkColorScheme(
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Color(0xFF18181B),
+    primary = Color(0xFF0F172A),        // Slate 900 (Monochrome Black)
     onPrimary = Color.White,
-    secondary = Color(0xFF52525B),
+    secondary = Color(0xFF64748B),      // Slate 500
     onSecondary = Color.White,
-    tertiary = Color(0xFF3F3F46),
-    background = Color(0xFFFAFAFA),
-    onBackground = Color(0xFF09090B),
+    tertiary = Color(0xFF0F172A),       // Slate 900
+    background = Color(0xFFF8FAFC),     // Slate 50
+    onBackground = Color(0xFF0F172A),
     surface = Color.White,
-    onSurface = Color(0xFF09090B),
-    surfaceVariant = Color(0xFFF4F4F5),
-    onSurfaceVariant = Color(0xFF71717A),
-    outline = Color(0xFFE4E4E7)
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    onSurface = Color(0xFF0F172A),
+    surfaceVariant = Color(0xFFF1F5F9), // Slate 100
+    onSurfaceVariant = Color(0xFF64748B),
+    outline = Color(0xFFE2E8F0)         // Slate 200
 )
 
 @Composable
